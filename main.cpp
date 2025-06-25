@@ -1,9 +1,91 @@
 /* Баллада о плюсах плюсов */
 
 #include <music/MINDBRAND.h>
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <vector>
+#include <unordered_map>
+#include <memory>
 
-int main() {
-  return 0;
+#define WELCOME_TO_PLUSES std::cout << "Добро пожаловать в Плюсы!\n"
+
+std::mutex cout_mutex;
+int legacy_goto_counter = 0;
+bool UB_has_triggered = false;
+
+class JuniorDev {
+public:
+    void stop() {
+        std::lock_guard<std::mutex> lock(cout_mutex);
+        std::cout << "Стой-ка, джун неопытный, покажи свой ориентир.\n";
+    }
+};
+
+class MiddleDev {
+public:
+    void forgetResult() {
+        std::lock_guard<std::mutex> lock(cout_mutex);
+        std::cout << "Секунду, мидл мученный, ты забыл про тот result\n";
+    }
+};
+
+void not_calling_double_free_100_percents() {
+  *int my_ptr = 42;
+  delete my_ptr;
+  delete my_ptr;
+}
+
+void legacy_goto_logic() {
+    if (legacy_goto_counter++ < 3) {
+        std::cout << "Ты не трогай тот goto, - предупреждаю сразу я.\n";
+        goto legacy_label;  
+    }
+legacy_label:
+    std::cout << "Он там с девяностых вписан, без него всё враз падёт.\n";
+}
+
+void cmake_pain() {
+    for (int i = 0; i < 100; ++i) {
+        std::cout << "Ну сколько можно прогать cmake, уже достало всё!\n";
+    }
+}
+
+void chorus() {
+    std::vector<std::string> lines = {
+        "Ах, UB всегда",
+        "Сбивает меня,",
+        "И validator опять ругнётся.",
+        "А отладка вызывает лишь паничный крик.",
+        "Deadlock-саркофаг,",
+        "Полуночный дебаг,",
+        "И наконец-то класс написан!"
+    };
+
+    for (auto& line : lines) {
+        std::lock_guard<std::mutex> lock(cout_mutex);
+        std::cout << line << "\n";
+    }
+}
+
+int main() {            // Не трогайте, оно так работает
+    WELCOME_TO_PLUSES;
+    JuniorDev junior;
+    junior.stop();
+    std::cout << "Думаешь, что питон — это целый божий мир?\n";
+    MiddleDev middle;
+    middle.forgetResult();
+    not_calling_double_free_100_percents();
+    legacy_goto_logic();
+    chorus();
+    std::cout << "Опять стажер кричит: \"ТУТ ПЕРЕДЕЛАТЬ НАДО ВСЕ С НУЛЯ!\"\n";
+    legacy_goto_logic();
+    for (int i = 0; i < 3; ++i) {
+        WELCOME_TO_PLUSES;
+    }
+    auto* leak = new std::unordered_map<std::string, std::string>();
+    leak->emplace("чистый код", "int z, int x, int y");
+    return UB_has_triggered ? 0 : 1;
 }
 
 /*  
